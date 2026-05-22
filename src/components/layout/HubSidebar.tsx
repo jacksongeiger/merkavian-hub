@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Sidebar, SidebarItem } from "@coinbase/cds-web/navigation";
 import { IconButton } from "@coinbase/cds-web/buttons";
 import type { IconName } from "@coinbase/cds-icons";
+import { useHubSettings } from "@/lib/use-hub-settings";
 
 type NavItem = { title: string; icon: IconName; href: string };
 
@@ -13,8 +14,9 @@ const NAV_ITEMS: NavItem[] = [
   { title: "Overview", icon: "dashboard", href: "/" },
   { title: "Crypto Tracker", icon: "chartLine", href: "/crypto-tracker" },
   { title: "Rapid Drafter", icon: "document", href: "/rapid-drafter" },
-  { title: "Merkavian HQ", icon: "laptop", href: "/merkavian-hq" },
   { title: "PoLChain", icon: "blockchain", href: "/polchain" },
+  { title: "Admin", icon: "gear", href: "/admin" },
+  { title: "Merkavian Trading", icon: "laptop", href: "/merkavian-trading" },
 ];
 
 const WIDTH_OPEN = 248;
@@ -29,6 +31,13 @@ export function HubSidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname() ?? "/";
   const router = useRouter();
+  const { settings } = useHubSettings();
+  const hidden = new Set(settings.hiddenTabs);
+  // Always keep the currently-active route visible so a user can't hide the
+  // page they're looking at (which would also hide the way back to Admin).
+  const visible = NAV_ITEMS.filter(
+    (item) => !hidden.has(item.href) || isActive(pathname, item.href),
+  );
 
   return (
     <motion.div
@@ -54,7 +63,7 @@ export function HubSidebar() {
           />
         )}
       >
-        {NAV_ITEMS.map((item) => (
+        {visible.map((item) => (
           <SidebarItem
             key={item.href}
             icon={item.icon}

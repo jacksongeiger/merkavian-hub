@@ -13,6 +13,7 @@ import {
   TextTitle3,
 } from "@coinbase/cds-web/typography";
 import { StatusDot } from "@/components/ui/StatusDot";
+import { useHubSettings } from "@/lib/use-hub-settings";
 
 type ProxyOk = { ok: true; data: unknown; fetchedAt: string };
 type ProxyFail = { ok: false; reason: string; status?: number; fetchedAt: string };
@@ -69,9 +70,13 @@ function formatTimestamp(iso: string): string {
   }
 }
 
-export function ServiceStatusCard({ name, endpoint, pollMs = 30_000, index = 0 }: Props) {
+export function ServiceStatusCard({ name, endpoint, pollMs, index = 0 }: Props) {
   const [state, setState] = useState<State>({ kind: "loading" });
   const lastDataRef = useRef<{ data: unknown; fetchedAt: string } | null>(null);
+  const { settings } = useHubSettings();
+  // Effective interval: explicit prop > Admin setting > 30s default.
+  // settings.pollingMs === 0 means "manual only" — fetch once on mount, never auto-refresh.
+  const effectivePollMs = pollMs ?? settings.pollingMs ?? 30_000;
 
   useEffect(() => {
     let cancelled = false;
@@ -113,12 +118,13 @@ export function ServiceStatusCard({ name, endpoint, pollMs = 30_000, index = 0 }
     }
 
     void tick();
-    const id = setInterval(tick, pollMs);
+    // pollingMs === 0 means "manual only" — fire once on mount but no interval.
+    const id = effectivePollMs > 0 ? setInterval(tick, effectivePollMs) : undefined;
     return () => {
       cancelled = true;
-      clearInterval(id);
+      if (id !== undefined) clearInterval(id);
     };
-  }, [endpoint, pollMs]);
+  }, [endpoint, effectivePollMs]);
 
   const statusKind =
     state.kind === "ok" ? "online" : state.kind === "stale" ? "warning" : "offline";

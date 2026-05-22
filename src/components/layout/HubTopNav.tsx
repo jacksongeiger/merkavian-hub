@@ -10,12 +10,14 @@ import {
 } from "@coinbase/cds-web/typography";
 import { StatusDot } from "@/components/ui/StatusDot";
 import { useServiceStatus, type ServiceStatus } from "@/lib/useServiceStatus";
+import { useHubSettings, type HubSettings } from "@/lib/use-hub-settings";
 
 const PAGE_TITLES: Record<string, string> = {
   "/": "Overview",
   "/crypto-tracker": "Crypto Tracker",
   "/rapid-drafter": "Rapid Drafter",
-  "/merkavian-hq": "Merkavian HQ",
+  "/merkavian-trading": "Merkavian Trading",
+  "/admin": "Admin",
   "/polchain": "PoLChain",
 };
 
@@ -31,7 +33,7 @@ function dotKind(s: ServiceStatus): "online" | "offline" | "warning" {
   return s === "ok" ? "online" : s === "down" ? "offline" : "warning";
 }
 
-function useLiveClock(): string {
+function useLiveClock(timezone: HubSettings["timezone"]): string {
   const [now, setNow] = useState<string>("");
   useEffect(() => {
     const update = () => {
@@ -42,21 +44,23 @@ function useLiveClock(): string {
           minute: "2-digit",
           second: "2-digit",
           hour12: false,
+          timeZone: timezone,
         }),
       );
     };
     update();
     const id = setInterval(update, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [timezone]);
   return now;
 }
 
 export function HubTopNav() {
   const pathname = usePathname() ?? "/";
-  const cryptobot = useServiceStatus("/api/cryptobot");
-  const polybot = useServiceStatus("/api/polybot");
-  const clock = useLiveClock();
+  const { settings } = useHubSettings();
+  const cryptobot = useServiceStatus("/api/cryptobot", settings.pollingMs || 30_000);
+  const polybot = useServiceStatus("/api/polybot", settings.pollingMs || 30_000);
+  const clock = useLiveClock(settings.timezone);
 
   return (
     <header
@@ -81,7 +85,7 @@ export function HubTopNav() {
             fontWeight: 600,
           }}
         >
-          MERKAVIAN HUB
+          {settings.hubTitle || "MERKAVIAN HUB"}
         </TextLabel1>
       </HStack>
 

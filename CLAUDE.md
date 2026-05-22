@@ -100,7 +100,7 @@ src/
     page.tsx                   # Hub overview / home
     crypto-tracker/page.tsx    # iframe tab
     rapid-drafter/page.tsx     # iframe tab
-    merkavian-hq/page.tsx      # Mac:5055 fallback panel
+    merkavian-trading/page.tsx # Mac:5055 fallback panel (renamed from merkavian-hq)
     polchain/page.tsx          # placeholder + V2 plan
     api/
       cryptobot/route.ts       # server-side proxy to 127.0.0.1:5050/api/bot/status
@@ -117,7 +117,7 @@ src/
       PolybotCard.tsx          # thin wrapper → ServiceStatusCard
       ServiceStatusCard.tsx    # shared 30s polling + 4-state machine
       IframePanel.tsx          # shared iframe + load-timeout fallback
-      MerkavianHQPanel.tsx     # local-only fallback (cannot iframe Mac from ARM)
+      MerkavianTradingPanel.tsx # local-only fallback (cannot iframe Mac from ARM)
       PolchainPanel.tsx        # COMING SOON panel with project facts + repo link
     ui/
       StatusDot.tsx            # online/offline/warning indicator + Framer pulse
@@ -254,7 +254,7 @@ Every service card and iframe panel must handle these states:
 | Overview | `/` | cryptobot + polybot status cards (30s polling) |
 | Crypto Tracker | `/crypto-tracker` | iframe of `https://192-18-128-170.nip.io` (public) |
 | Rapid Drafter | `/rapid-drafter` | iframe of `https://rapid-drafter.192-18-128-170.nip.io` (basic_auth) |
-| Merkavian HQ | `/merkavian-hq` | Fallback-only panel — cannot be iframed (Mac:5055, mixed-content + LAN-only). Shows `Open localhost:5055` CTA. |
+| Merkavian Trading | `/merkavian-trading` | Fallback-only panel — cannot be iframed (Mac:5055, mixed-content + LAN-only). Shows `Open localhost:5055` CTA. |
 | PoLChain | `/polchain` | "Coming Soon" placeholder with project facts + repo link. Becomes an iframe once polchain is deployed to ARM. |
 
 ## V1 Scope
@@ -263,13 +263,13 @@ Every service card and iframe panel must handle these states:
 2. Overview page: status cards for cryptobot + polybot with live polling
 3. Crypto Tracker tab: full iframe embed
 4. Rapid Drafter tab: full iframe embed
-5. Merkavian HQ tab: fallback-only panel pointing at Mac:5055
+5. Merkavian Trading tab: fallback-only panel pointing at Mac:5055
 6. PoLChain tab: placeholder + project facts
 7. Caddy config update + PM2 deployment on ARM
 
 ## V2 (do not build until V1 is live and tested)
 
-- Migrate merkavian-dashboard to ARM (then the Merkavian HQ tab becomes a real iframe panel)
+- Migrate merkavian-dashboard to ARM (then the Merkavian Trading tab becomes a real iframe panel)
 - Deploy polchain frontend to ARM and swap the PoLChain placeholder for an iframe
 - Add Ollama chat interface tab
 - Add unified log viewer across all services

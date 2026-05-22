@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 2026-05-22 — Sidebar reorder + Admin tab + Merkavian HQ → Merkavian Trading rename + StatusDot blue breathing pulse
+
+### Sidebar
+- New `Admin` tab (icon `gear`, route `/admin`). Page itself is created by a parallel agent — this change only adds the entry.
+- Renamed `Merkavian HQ` → `Merkavian Trading` and moved to the bottom of the sidebar.
+- Final `NAV_ITEMS` order: Overview, Crypto Tracker, Rapid Drafter, PoLChain, Admin, Merkavian Trading.
+
+### Rename `Merkavian HQ` → `Merkavian Trading`
+- `src/app/merkavian-hq/` → `src/app/merkavian-trading/` (route is now `/merkavian-trading`).
+- `src/components/services/MerkavianHQPanel.tsx` → `MerkavianTradingPanel.tsx`; exported component renamed accordingly.
+- `HubTopNav.tsx` `PAGE_TITLES` updated (also adds `/admin` → `Admin`).
+- `CLAUDE.md` tab table + structure doc updated.
+
+### StatusDot
+- `online` color flipped from `--color-fgPositive` (green) to `--color-fgPrimary` (Coinbase blue).
+- Replaced the scale-expanding ring pulse with a steady opacity breathing animation: `opacity: [1, 0.4, 1]`, `duration: 2s`, `ease: "easeInOut"`, `repeat: Infinity`. Reads as a calm inner glow instead of a flicker.
+
+### Verification
+- `npx tsc --noEmit` clean.
+
 ## 2026-05-22 — Real TopNav + rich Merkavian HQ + PoLChain detail page
 
 ### TopNav (`HubTopNav.tsx` rewrite)

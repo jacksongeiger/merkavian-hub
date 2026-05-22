@@ -92,7 +92,7 @@ function isFresh<T>(s: PolledResult<T>): s is Extract<PolledResult<T>, { kind: "
   return s.kind === "ok" || s.kind === "stale";
 }
 
-export function MerkavianHQPanel() {
+export function MerkavianTradingPanel() {
   const crypto = usePolledJson<CryptobotPortfolio>("/api/cryptobot/portfolio");
   const poly = usePolledJson<PolybotPortfolio>("/api/polybot/portfolio");
 
@@ -304,7 +304,7 @@ function StatusStripCard({ name, online, stat }: { name: string; online: boolean
           {online ? "ONLINE" : "OFFLINE"}
         </Tag>
       </HStack>
-      <TextCaption as="span" style={{ color: "var(--color-fgMuted)" }}>{stat}</TextCaption>
+      <TextCaption as="span" style={{ color: "var(--color-fgMuted)", textTransform: "none", letterSpacing: 0 }}>{stat}</TextCaption>
     </ContentCard>
   );
 }
@@ -350,7 +350,7 @@ function MetricTile({
         {value}
       </TextTitle1>
       {sub && (
-        <TextCaption as="span" style={{ color: "var(--color-fgMuted)" }}>{sub}</TextCaption>
+        <TextCaption as="span" style={{ color: "var(--color-fgMuted)", textTransform: "none", letterSpacing: 0 }}>{sub}</TextCaption>
       )}
     </ContentCard>
   );
