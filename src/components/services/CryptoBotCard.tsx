@@ -1,7 +1,7 @@
 "use client";
 
-import { ServiceStatusCard } from "./ServiceStatusCard";
+import { BotHealthCard } from "@/components/overview/BotHealthCard";
 
 export function CryptoBotCard({ index = 0 }: { index?: number }) {
-  return <ServiceStatusCard name="Crypto Bot" endpoint="/api/cryptobot" index={index} />;
+  return <BotHealthCard service="cryptobot" index={index} />;
 }

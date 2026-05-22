@@ -15,7 +15,6 @@ const NAV_ITEMS: NavItem[] = [
   { title: "Crypto Tracker", icon: "chartLine", href: "/crypto-tracker" },
   { title: "Rapid Drafter", icon: "document", href: "/rapid-drafter" },
   { title: "PoLChain", icon: "blockchain", href: "/polchain" },
-  { title: "Admin", icon: "gear", href: "/admin" },
   { title: "Merkavian Trading", icon: "laptop", href: "/merkavian-trading" },
 ];
 

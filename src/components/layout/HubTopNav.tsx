@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { HStack } from "@coinbase/cds-web/layout";
 import {
   TextCaption,
   TextLabel1,
   TextTitle3,
 } from "@coinbase/cds-web/typography";
+import { IconButton } from "@coinbase/cds-web/buttons";
 import { StatusDot } from "@/components/ui/StatusDot";
 import { useServiceStatus, type ServiceStatus } from "@/lib/useServiceStatus";
-import { useHubSettings, type HubSettings } from "@/lib/use-hub-settings";
+import { useHubSettings } from "@/lib/use-hub-settings";
 
 const PAGE_TITLES: Record<string, string> = {
   "/": "Overview",
@@ -33,34 +33,13 @@ function dotKind(s: ServiceStatus): "online" | "offline" | "warning" {
   return s === "ok" ? "online" : s === "down" ? "offline" : "warning";
 }
 
-function useLiveClock(timezone: HubSettings["timezone"]): string {
-  const [now, setNow] = useState<string>("");
-  useEffect(() => {
-    const update = () => {
-      const d = new Date();
-      setNow(
-        d.toLocaleTimeString(undefined, {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-          timeZone: timezone,
-        }),
-      );
-    };
-    update();
-    const id = setInterval(update, 1000);
-    return () => clearInterval(id);
-  }, [timezone]);
-  return now;
-}
-
 export function HubTopNav() {
   const pathname = usePathname() ?? "/";
+  const router = useRouter();
   const { settings } = useHubSettings();
   const cryptobot = useServiceStatus("/api/cryptobot", settings.pollingMs || 30_000);
   const polybot = useServiceStatus("/api/polybot", settings.pollingMs || 30_000);
-  const clock = useLiveClock(settings.timezone);
+  const adminActive = pathname === "/admin" || pathname.startsWith("/admin/");
 
   return (
     <header
@@ -94,7 +73,7 @@ export function HubTopNav() {
         {titleFor(pathname)}
       </TextTitle3>
 
-      {/* RIGHT — clock + bot status dots */}
+      {/* RIGHT — bot status dots + admin gear */}
       <HStack alignItems="center" gap={3} justifyContent="flex-end">
         <HStack alignItems="center" gap={1.5}>
           <StatusDot status={dotKind(cryptobot)} size={8} ariaLabel={`Crypto Bot ${cryptobot}`} />
@@ -117,17 +96,25 @@ export function HubTopNav() {
           }}
           aria-hidden
         />
-        <TextCaption
-          as="span"
+        <span
           style={{
-            color: "var(--color-fgMuted)",
-            fontVariantNumeric: "tabular-nums",
-            minWidth: 70,
-            textAlign: "right",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 8,
+            padding: 2,
+            background: adminActive ? "var(--color-bgPrimaryWash)" : "transparent",
+            transition: "background 160ms ease",
           }}
         >
-          {clock || "—"}
-        </TextCaption>
+          <IconButton
+            name="gear"
+            variant="secondary"
+            active={adminActive}
+            onClick={() => router.push("/admin")}
+            aria-label="Open admin"
+          />
+        </span>
       </HStack>
     </header>
   );

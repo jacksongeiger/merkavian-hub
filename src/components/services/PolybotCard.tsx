@@ -1,7 +1,7 @@
 "use client";
 
-import { ServiceStatusCard } from "./ServiceStatusCard";
+import { BotHealthCard } from "@/components/overview/BotHealthCard";
 
 export function PolybotCard({ index = 0 }: { index?: number }) {
-  return <ServiceStatusCard name="Polybot" endpoint="/api/polybot" index={index} />;
+  return <BotHealthCard service="polybot" index={index} />;
 }

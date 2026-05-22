@@ -1,21 +1,43 @@
 import { Grid, VStack } from "@coinbase/cds-web/layout";
-import { TextBody, TextTitle1 } from "@coinbase/cds-web/typography";
-import { CryptoBotCard } from "@/components/services/CryptoBotCard";
-import { PolybotCard } from "@/components/services/PolybotCard";
+import { Greeting } from "@/components/overview/Greeting";
+import { BotHealthCard } from "@/components/overview/BotHealthCard";
+import { CryptoBriefCard } from "@/components/overview/CryptoBriefCard";
+import {
+  CryptoBotTradesCard,
+  PolybotTradesCard,
+} from "@/components/overview/RecentTrades";
+import { QuickLinks } from "@/components/overview/QuickLinks";
 
 export default function OverviewPage() {
   return (
     <VStack gap={4}>
-      <VStack gap={1}>
-        <TextTitle1 as="h2">Live services</TextTitle1>
-        <TextBody as="p" style={{ color: "var(--color-fgMuted)" }}>
-          Real-time status from each running bot. Updates every 30 seconds.
-        </TextBody>
-      </VStack>
-      <Grid templateColumns="repeat(auto-fit, minmax(340px, 1fr))" gap={3}>
-        <CryptoBotCard index={0} />
-        <PolybotCard index={1} />
+      <Greeting />
+
+      <Grid
+        gap={3}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+        }}
+      >
+        <BotHealthCard service="cryptobot" index={0} />
+        <BotHealthCard service="polybot" index={1} />
       </Grid>
+
+      <CryptoBriefCard index={2} />
+
+      <Grid
+        gap={3}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+        }}
+      >
+        <CryptoBotTradesCard index={3} />
+        <PolybotTradesCard index={4} />
+      </Grid>
+
+      <QuickLinks baseIndex={5} />
     </VStack>
   );
 }
