@@ -8,6 +8,9 @@ body,
 
 body {
   overflow-x: hidden;
+  background: var(--color-bg, #ffffff);
+  color: var(--color-fg, rgb(10, 11, 13));
+  color-scheme: light;
 }
 
 * {

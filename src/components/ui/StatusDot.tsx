@@ -11,9 +11,9 @@ type Props = {
 };
 
 const COLORS: Record<StatusKind, string> = {
-  online: "var(--cds-color-foregroundPositive, rgb(39,173,117))",
-  offline: "var(--cds-color-foregroundMuted, rgb(138,145,158))",
-  warning: "var(--cds-color-foregroundWarning, rgb(248,150,86))",
+  online: "var(--color-fgPositive)",
+  offline: "var(--color-fgMuted)",
+  warning: "var(--color-fgWarning)",
 };
 
 export function StatusDot({ status, size = 10, ariaLabel }: Props) {
@@ -40,15 +40,14 @@ export function StatusDot({ status, size = 10, ariaLabel }: Props) {
           height: size,
           borderRadius: "50%",
           backgroundColor: color,
-          boxShadow: pulse ? `0 0 6px ${color}` : "none",
         }}
       />
       {pulse && (
         <motion.span
           aria-hidden
-          initial={{ opacity: 0.6, scale: 1 }}
-          animate={{ opacity: 0, scale: 2.2 }}
-          transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
+          initial={{ opacity: 0.45, scale: 1 }}
+          animate={{ opacity: 0, scale: 2.4 }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
           style={{
             position: "absolute",
             inset: 0,

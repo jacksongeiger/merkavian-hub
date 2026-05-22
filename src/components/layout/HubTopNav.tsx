@@ -8,6 +8,8 @@ const PAGE_TITLES: Record<string, string> = {
   "/": "Overview",
   "/crypto-tracker": "Crypto Tracker",
   "/rapid-drafter": "Rapid Drafter",
+  "/merkavian-hq": "Merkavian HQ",
+  "/polchain": "PoLChain",
 };
 
 function titleFor(path: string): string {
@@ -21,8 +23,15 @@ function titleFor(path: string): string {
 export function HubTopNav() {
   const pathname = usePathname() ?? "/";
   return (
-    <NavigationBar accessibilityLabel="Hub primary navigation">
-      <TextTitle3 as="h1">{titleFor(pathname)}</TextTitle3>
-    </NavigationBar>
+    <div
+      style={{
+        background: "var(--color-bg)",
+        borderBottom: "1px solid var(--color-bgLine)",
+      }}
+    >
+      <NavigationBar accessibilityLabel="Hub primary navigation">
+        <TextTitle3 as="h1">{titleFor(pathname)}</TextTitle3>
+      </NavigationBar>
+    </div>
   );
 }

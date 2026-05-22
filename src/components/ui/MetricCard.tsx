@@ -10,29 +10,44 @@ type Props = {
   value: ReactNode;
   sub?: string;
   accessory?: ReactNode;
-  tone?: "default" | "positive" | "negative" | "warning" | "muted";
+  tone?: "default" | "positive" | "negative" | "warning" | "muted" | "primary";
 };
 
 const VALUE_COLORS: Record<NonNullable<Props["tone"]>, string> = {
-  default: "var(--cds-color-foregroundPrimary, rgb(255,255,255))",
-  positive: "var(--cds-color-foregroundPositive, rgb(39,173,117))",
-  negative: "var(--cds-color-foregroundNegative, rgb(240,97,109))",
-  warning: "var(--cds-color-foregroundWarning, rgb(248,150,86))",
-  muted: "var(--cds-color-foregroundMuted, rgb(138,145,158))",
+  default: "var(--color-fg)",
+  positive: "var(--color-fgPositive)",
+  negative: "var(--color-fgNegative)",
+  warning: "var(--color-fgWarning)",
+  muted: "var(--color-fgMuted)",
+  primary: "var(--color-fgPrimary)",
 };
 
 export function MetricCard({ label, value, sub, accessory, tone = "default" }: Props) {
   return (
-    <ContentCard padding={3} gap={2}>
+    <ContentCard
+      padding={3}
+      gap={2}
+      style={{
+        background: "var(--color-bg)",
+        border: "1px solid var(--color-bgLine)",
+        borderRadius: 12,
+      }}
+    >
       <HStack justifyContent="space-between" alignItems="center" width="100%">
-        <TextCaption as="span">{label.toUpperCase()}</TextCaption>
+        <TextCaption as="span" style={{ color: "var(--color-fgMuted)", letterSpacing: "0.08em" }}>
+          {label.toUpperCase()}
+        </TextCaption>
         {accessory}
       </HStack>
       <VStack gap={1}>
         <TextTitle1 as="span" style={{ color: VALUE_COLORS[tone] }}>
           {value}
         </TextTitle1>
-        {sub ? <TextBody as="span">{sub}</TextBody> : null}
+        {sub ? (
+          <TextBody as="span" style={{ color: "var(--color-fgMuted)" }}>
+            {sub}
+          </TextBody>
+        ) : null}
       </VStack>
     </ContentCard>
   );

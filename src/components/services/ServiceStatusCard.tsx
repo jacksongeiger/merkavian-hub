@@ -6,7 +6,12 @@ import { ContentCard } from "@coinbase/cds-web/cards";
 import { Banner } from "@coinbase/cds-web/banner";
 import { Spinner } from "@coinbase/cds-web/loaders";
 import { HStack, VStack, Box } from "@coinbase/cds-web/layout";
-import { TextBody, TextCaption, TextLabel2, TextTitle3 } from "@coinbase/cds-web/typography";
+import {
+  TextBody,
+  TextCaption,
+  TextLabel2,
+  TextTitle3,
+} from "@coinbase/cds-web/typography";
 import { StatusDot } from "@/components/ui/StatusDot";
 
 type ProxyOk = { ok: true; data: unknown; fetchedAt: string };
@@ -37,14 +42,14 @@ function reasonLabel(r: string): string {
 }
 
 function formatScalar(v: unknown): string {
-  if (v === null) return "null";
+  if (v === null) return "—";
   if (typeof v === "number") return Number.isInteger(v) ? String(v) : v.toFixed(3);
   if (typeof v === "boolean") return v ? "yes" : "no";
   if (typeof v === "string") return v;
   return JSON.stringify(v);
 }
 
-function topLevelScalars(data: unknown, max = 4): Array<[string, string]> {
+function topLevelScalars(data: unknown, max = 6): Array<[string, string]> {
   if (!data || typeof data !== "object") return [];
   const entries: Array<[string, string]> = [];
   for (const [k, v] of Object.entries(data as Record<string, unknown>)) {
@@ -58,7 +63,7 @@ function topLevelScalars(data: unknown, max = 4): Array<[string, string]> {
 function formatTimestamp(iso: string): string {
   try {
     const d = new Date(iso);
-    return d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    return d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
   } catch {
     return iso;
   }
@@ -115,30 +120,39 @@ export function ServiceStatusCard({ name, endpoint, pollMs = 30_000, index = 0 }
     };
   }, [endpoint, pollMs]);
 
+  const statusKind =
+    state.kind === "ok" ? "online" : state.kind === "stale" ? "warning" : "offline";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, ease: "easeOut", delay: index * 0.05 }}
+      transition={{ duration: 0.22, ease: "easeOut", delay: index * 0.05 }}
     >
-      <ContentCard padding={3} gap={2} minHeight={180}>
+      <ContentCard
+        padding={4}
+        gap={3}
+        minHeight={220}
+        style={{
+          background: "var(--color-bg)",
+          border: "1px solid var(--color-bgLine)",
+          borderRadius: 16,
+        }}
+      >
         <HStack justifyContent="space-between" alignItems="center" width="100%">
           <HStack alignItems="center" gap={2}>
-            <StatusDot
-              status={state.kind === "ok" ? "online" : state.kind === "stale" ? "warning" : state.kind === "down" ? "offline" : "offline"}
-              ariaLabel={`${name} status: ${state.kind}`}
-            />
+            <StatusDot status={statusKind} ariaLabel={`${name} status: ${state.kind}`} />
             <TextTitle3 as="h3">{name}</TextTitle3>
           </HStack>
           {(state.kind === "ok" || state.kind === "stale") && (
-            <TextCaption as="span">
-              updated {formatTimestamp(state.kind === "ok" ? state.fetchedAt : state.lastFetchedAt)}
+            <TextCaption as="span" style={{ color: "var(--color-fgMuted)" }}>
+              {formatTimestamp(state.kind === "ok" ? state.fetchedAt : state.lastFetchedAt)}
             </TextCaption>
           )}
         </HStack>
 
         {state.kind === "loading" && (
-          <Box display="flex" justifyContent="center" alignItems="center" padding={3}>
+          <Box display="flex" justifyContent="center" alignItems="center" padding={4}>
             <Spinner size={20} />
           </Box>
         )}
@@ -164,17 +178,48 @@ export function ServiceStatusCard({ name, endpoint, pollMs = 30_000, index = 0 }
   );
 }
 
-function MetricList({ entries, muted = false }: { entries: Array<[string, string]>; muted?: boolean }) {
+function MetricList({
+  entries,
+  muted = false,
+}: {
+  entries: Array<[string, string]>;
+  muted?: boolean;
+}) {
   if (entries.length === 0) {
-    return <TextBody as="span">Connected. No metrics reported.</TextBody>;
+    return (
+      <TextBody as="span" style={{ color: "var(--color-fgMuted)" }}>
+        Connected. No metrics reported.
+      </TextBody>
+    );
   }
-  const color = muted ? "var(--cds-color-foregroundMuted, rgb(138,145,158))" : undefined;
+  const labelColor = muted ? "var(--color-fgMuted)" : "var(--color-fgMuted)";
+  const valueColor = muted ? "var(--color-fgMuted)" : "var(--color-fg)";
   return (
-    <VStack gap={1}>
+    <VStack gap={1.5}>
       {entries.map(([k, v]) => (
-        <HStack key={k} justifyContent="space-between" alignItems="baseline" width="100%">
-          <TextLabel2 as="span" style={color ? { color } : undefined}>{k}</TextLabel2>
-          <TextBody as="span" style={color ? { color } : undefined}>{v}</TextBody>
+        <HStack
+          key={k}
+          justifyContent="space-between"
+          alignItems="baseline"
+          width="100%"
+          style={{
+            paddingBottom: 6,
+            borderBottom: "1px solid var(--color-bgLine)",
+          }}
+        >
+          <TextLabel2 as="span" style={{ color: labelColor, fontWeight: 400 }}>
+            {k}
+          </TextLabel2>
+          <TextBody
+            as="span"
+            style={{
+              color: valueColor,
+              fontVariantNumeric: "tabular-nums",
+              fontWeight: 500,
+            }}
+          >
+            {v}
+          </TextBody>
         </HStack>
       ))}
     </VStack>

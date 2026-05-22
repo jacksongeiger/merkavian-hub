@@ -13,10 +13,12 @@ const NAV_ITEMS: NavItem[] = [
   { title: "Overview", icon: "dashboard", href: "/" },
   { title: "Crypto Tracker", icon: "chartLine", href: "/crypto-tracker" },
   { title: "Rapid Drafter", icon: "document", href: "/rapid-drafter" },
+  { title: "Merkavian HQ", icon: "laptop", href: "/merkavian-hq" },
+  { title: "PoLChain", icon: "blockchain", href: "/polchain" },
 ];
 
-const WIDTH_OPEN = 240;
-const WIDTH_COLLAPSED = 64;
+const WIDTH_OPEN = 248;
+const WIDTH_COLLAPSED = 72;
 
 function isActive(currentPath: string, href: string): boolean {
   if (href === "/") return currentPath === "/";
@@ -32,7 +34,13 @@ export function HubSidebar() {
     <motion.div
       animate={{ width: collapsed ? WIDTH_COLLAPSED : WIDTH_OPEN }}
       transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
-      style={{ height: "100vh", flexShrink: 0, overflow: "hidden" }}
+      style={{
+        height: "100vh",
+        flexShrink: 0,
+        overflow: "hidden",
+        borderRight: "1px solid var(--color-bgLine)",
+        background: "var(--color-bg)",
+      }}
     >
       <Sidebar
         collapsed={collapsed}
