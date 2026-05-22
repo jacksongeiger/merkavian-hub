@@ -4,6 +4,7 @@ import "@coinbase/cds-web/defaultFontStyles";
 import "@coinbase/cds-web/globalStyles";
 import "./globals.css";
 import { Providers } from "./providers";
+import { HubShell } from "@/components/layout/HubShell";
 
 export const metadata: Metadata = {
   title: "Merkavian Hub",
@@ -16,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <HubShell>{children}</HubShell>
+        </Providers>
       </body>
     </html>
   );
