@@ -38,3 +38,31 @@
 ### Verified
 - `npx tsc --noEmit` clean.
 - `npm run build` clean. 5 routes generated: `/`, `/crypto-tracker`, `/rapid-drafter`, `/api/cryptobot`, `/api/polybot`. First Load JS ≈ 190 KB.
+
+## 2026-05-21 — Production deploy + end-to-end verification
+
+### Deployed
+- Cloned repo to ARM at `~/merkavian-hub`, `npm install`, `npm run build`.
+- Started under PM2 as `hub`: `pm2 start npm --name "hub" -- start -- -p 3002 -H 127.0.0.1`. `pm2 save`d.
+- Added Caddy block for `hub.192-18-128-170.nip.io` with `basic_auth` (user `jackson`, bcrypt hash); reloaded Caddy; Let's Encrypt cert obtained automatically via tls-alpn-01.
+- `.env` on ARM contains: `NEXT_PUBLIC_CRYPTO_TRACKER_URL`, `NEXT_PUBLIC_RAPID_DRAFTER_URL`, `CRYPTOBOT_URL` (with `/api/bot/status` path), `POLYBOT_URL` (with `/api/bot/status` path), `HUB_PASSWORD`. Mode `600`. Gitignored.
+- Repo flipped to **public** on GitHub so ARM could `git clone` over HTTPS without auth setup. Reversible.
+
+### Real findings from browser verification
+- **Iframe-of-basic_auth works.** Both `crypto-tracker` (public) and `rapid-drafter` (Caddy `basic_auth`) iframes render their full content inside the Hub shell. Earlier skeptic-review concern about nested credential prompts: invalidated in practice — Chromium carries the cached basic_auth session into same-host subresource loads.
+- **URL-embedded creds (`https://user:pass@host/`) break in-page `fetch()`.** When the page is loaded with creds in the URL, Chromium injects them into `Request` construction for same-origin fetches, which the Fetch spec then rejects (`Failed to execute 'fetch' on 'Window': Request cannot be constructed from a URL that includes credentials`). Bot status cards showed "Hub API unreachable" in this mode.
+  - **Workaround:** load the bare URL (no creds), let Chromium use the native HTTP auth dialog. The browser caches the credentials in the regular auth cache (not URL-derived), which doesn't get injected into `Request` constructors. Verified working.
+- **`CRYPTOBOT_URL` / `POLYBOT_URL` must include the `/api/bot/status` path.** The root paths (`:5050/` and `:5001/`) serve Flask SocketIO HTML dashboards, not JSON; `proxyService` correctly rejected them as `non-json`. Updated `.env.example` to make the right path obvious.
+
+### Verified end-to-end
+- ✅ `curl -I https://hub.192-18-128-170.nip.io` returns `HTTP/2 401` with `WWW-Authenticate: Basic realm="restricted"` (Caddy auth wall live).
+- ✅ With auth, `/api/cryptobot` and `/api/polybot` return real JSON from the bots.
+- ✅ Overview page renders both bot status cards with live data (12 active pairs, "Neutral — full trading", `ai_healthy: yes`, `ollama_online`, etc.).
+- ✅ Crypto Tracker tab loads the full daily brief iframe.
+- ✅ Rapid Drafter tab loads the full decision list iframe.
+- ⚠️ Console shows 6 preserved `503` errors from the period before `CRYPTOBOT_URL`/`POLYBOT_URL` paths were fixed in `.env`. Current state is clean.
+
+### Open
+- The 4-state machine in `ServiceStatusCard` (loading / ok / stale / down) has no automated test. The bot polling is the only thing that exercises it, so a regression would only be visible during an outage.
+- `MetricCard` is still unreferenced in V1 — either delete it or migrate the bot cards to use it.
+- `polchain` and `merkavian-dashboard` are V2; not deployed.
