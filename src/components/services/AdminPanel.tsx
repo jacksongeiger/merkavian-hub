@@ -21,6 +21,7 @@ import {
   useHubSettings,
   type HubSettings,
 } from "@/lib/use-hub-settings";
+import { Tooltip } from "@/components/ui/Tooltip";
 import pkg from "../../../package.json";
 
 const TABS: ReadonlyArray<{ title: string; href: string }> = [
@@ -193,14 +194,16 @@ function TabVisibilitySection() {
           })}
         </VStack>
         <HStack gap={2} flexWrap="wrap" style={{ marginTop: 8 }}>
-          <Button
-            variant="secondary"
-            onClick={() =>
-              setSettings({ hiddenTabs: ["/merkavian-trading", "/admin"] })
-            }
-          >
-            Presentation Mode
-          </Button>
+          <Tooltip content="Hides Merkavian Trading and Admin from the sidebar — useful when showing the Hub to others">
+            <Button
+              variant="secondary"
+              onClick={() =>
+                setSettings({ hiddenTabs: ["/merkavian-trading", "/admin"] })
+              }
+            >
+              Presentation Mode
+            </Button>
+          </Tooltip>
           <Button
             variant="tertiary"
             onClick={() => setSettings({ hiddenTabs: [] })}
@@ -281,9 +284,11 @@ function HubSettingsSection() {
           <RowDivider />
 
           <VStack gap={1}>
-            <TextLabel2 as="span" style={{ fontWeight: 500 }}>
-              Polling interval
-            </TextLabel2>
+            <Tooltip showIcon content="How often the bot cards automatically fetch new data from ARM">
+              <TextLabel2 as="span" style={{ fontWeight: 500 }}>
+                Polling interval
+              </TextLabel2>
+            </Tooltip>
             <NativeSelect
               value={String(settings.pollingMs)}
               onChange={(v) =>
@@ -517,29 +522,31 @@ function ServiceRow({ name, endpoint }: { name: string; endpoint: string }) {
         </HStack>
       </HStack>
 
-      <HStack
-        justifyContent="space-between"
-        alignItems="center"
-        style={{ cursor: "pointer" }}
-        onClick={() => setRawOpen((o) => !o)}
-      >
-        <TextCaption
-          as="span"
-          style={{ color: "var(--color-fgMuted)", textTransform: "none" }}
+      <Tooltip content="Shows the raw JSON returned by the bot API — useful for debugging">
+        <HStack
+          justifyContent="space-between"
+          alignItems="center"
+          style={{ cursor: "pointer", width: "100%" }}
+          onClick={() => setRawOpen((o) => !o)}
         >
-          {state.error
-            ? `Error: ${state.error}`
-            : state.status === "ok"
-            ? "Last response captured below"
-            : "Awaiting response"}
-        </TextCaption>
-        <TextCaption
-          as="span"
-          style={{ color: "var(--color-fgPrimary)", textTransform: "none" }}
-        >
-          {rawOpen ? "Hide raw response" : "Show raw response"}
-        </TextCaption>
-      </HStack>
+          <TextCaption
+            as="span"
+            style={{ color: "var(--color-fgMuted)", textTransform: "none" }}
+          >
+            {state.error
+              ? `Error: ${state.error}`
+              : state.status === "ok"
+              ? "Last response captured below"
+              : "Awaiting response"}
+          </TextCaption>
+          <TextCaption
+            as="span"
+            style={{ color: "var(--color-fgPrimary)", textTransform: "none" }}
+          >
+            {rawOpen ? "Hide raw response" : "Show raw response"}
+          </TextCaption>
+        </HStack>
+      </Tooltip>
 
       <Collapsible collapsed={!rawOpen}>
         <Box
@@ -755,12 +762,14 @@ function DangerZoneSection() {
             back to defaults. The page will reload.
           </TextBody>
           <HStack>
-            <Button
-              variant="negative"
-              onClick={() => setConfirmOpen(true)}
-            >
-              Clear all settings
-            </Button>
+            <Tooltip content="Resets all localStorage settings to defaults — does not affect bot data or deployment">
+              <Button
+                variant="negative"
+                onClick={() => setConfirmOpen(true)}
+              >
+                Clear all settings
+              </Button>
+            </Tooltip>
           </HStack>
         </VStack>
       </ContentCard>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { VStack } from "@coinbase/cds-web/layout";
-import { TextBody, TextDisplay3 } from "@coinbase/cds-web/typography";
+import { TextCaption, TextDisplay3 } from "@coinbase/cds-web/typography";
 
 const NAME = "Jackson";
 
@@ -34,7 +34,7 @@ export function Greeting() {
 
   return (
     <VStack gap={1}>
-      <TextBody
+      <TextCaption
         as="p"
         style={{
           color: "var(--color-fgMuted)",
@@ -42,10 +42,10 @@ export function Greeting() {
           letterSpacing: 0,
         }}
       >
-        {text || " "}
-      </TextBody>
+        {text || " "}
+      </TextCaption>
       <TextDisplay3 as="h1" style={{ color: "var(--color-fg)" }}>
-        {date || " "}
+        {date || " "}
       </TextDisplay3>
     </VStack>
   );

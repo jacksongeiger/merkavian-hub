@@ -9,6 +9,7 @@ import {
 } from "@coinbase/cds-web/typography";
 import { IconButton } from "@coinbase/cds-web/buttons";
 import { StatusDot } from "@/components/ui/StatusDot";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { useServiceStatus, type ServiceStatus } from "@/lib/useServiceStatus";
 import { useHubSettings } from "@/lib/use-hub-settings";
 
@@ -75,18 +76,22 @@ export function HubTopNav() {
 
       {/* RIGHT — bot status dots + admin gear */}
       <HStack alignItems="center" gap={3} justifyContent="flex-end">
-        <HStack alignItems="center" gap={1.5}>
-          <StatusDot status={dotKind(cryptobot)} size={8} ariaLabel={`Crypto Bot ${cryptobot}`} />
-          <TextCaption as="span" style={{ color: "var(--color-fgMuted)" }}>
-            CRYPTO
-          </TextCaption>
-        </HStack>
-        <HStack alignItems="center" gap={1.5}>
-          <StatusDot status={dotKind(polybot)} size={8} ariaLabel={`Polybot ${polybot}`} />
-          <TextCaption as="span" style={{ color: "var(--color-fgMuted)" }}>
-            POLY
-          </TextCaption>
-        </HStack>
+        <Tooltip content="Cryptobot status — Coinbase Advanced Trade bot running on ARM">
+          <HStack alignItems="center" gap={1}>
+            <StatusDot status={dotKind(cryptobot)} size={8} ariaLabel={`Crypto Bot ${cryptobot}`} />
+            <TextCaption as="span" style={{ color: "var(--color-fgMuted)" }}>
+              CRYPTO
+            </TextCaption>
+          </HStack>
+        </Tooltip>
+        <Tooltip content="Polybot status — Polymarket prediction market bot running on ARM">
+          <HStack alignItems="center" gap={1}>
+            <StatusDot status={dotKind(polybot)} size={8} ariaLabel={`Polybot ${polybot}`} />
+            <TextCaption as="span" style={{ color: "var(--color-fgMuted)" }}>
+              POLY
+            </TextCaption>
+          </HStack>
+        </Tooltip>
         <span
           style={{
             width: 1,
@@ -96,25 +101,27 @@ export function HubTopNav() {
           }}
           aria-hidden
         />
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 8,
-            padding: 2,
-            background: adminActive ? "var(--color-bgPrimaryWash)" : "transparent",
-            transition: "background 160ms ease",
-          }}
-        >
-          <IconButton
-            name="gear"
-            variant="secondary"
-            active={adminActive}
-            onClick={() => router.push("/admin")}
-            aria-label="Open admin"
-          />
-        </span>
+        <Tooltip content="Hub settings and administration">
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 8,
+              padding: 2,
+              background: adminActive ? "var(--color-bgPrimaryWash)" : "transparent",
+              transition: "background 160ms ease",
+            }}
+          >
+            <IconButton
+              name="gear"
+              variant="secondary"
+              active={adminActive}
+              onClick={() => router.push("/admin")}
+              aria-label="Open admin"
+            />
+          </span>
+        </Tooltip>
       </HStack>
     </header>
   );

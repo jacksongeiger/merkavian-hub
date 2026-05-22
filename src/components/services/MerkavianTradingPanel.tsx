@@ -22,6 +22,7 @@ import {
   TextTitle3,
 } from "@coinbase/cds-web/typography";
 import { StatusDot } from "@/components/ui/StatusDot";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { usePolledJson, type PolledResult } from "@/lib/usePolledJson";
 
 type CryptobotPortfolio = {
@@ -146,24 +147,28 @@ export function MerkavianTradingPanel() {
         <Grid templateColumns="repeat(auto-fit, minmax(220px, 1fr))" gap={2}>
           <MetricTile
             label="Crypto Bot — total value"
+            tooltip="Current portfolio value including open positions"
             value={cryptoData ? formatUSD(cryptoData.total_value) : "—"}
             sub={cryptoData ? `started ${formatUSD(cryptoData.starting_balance)}` : "awaiting data"}
             tone={cryptoData ? "default" : "muted"}
           />
           <MetricTile
             label="Crypto Bot — P&L"
+            tooltip="Realized + unrealized profit and loss"
             value={cryptoData ? formatUSD(cryptoData.total_pnl) : "—"}
             sub={cryptoData ? formatPct(cryptoData.total_pnl_pct) : "awaiting data"}
             tone={cryptoData ? (cryptoData.total_pnl >= 0 ? "positive" : "negative") : "muted"}
           />
           <MetricTile
             label="Polybot — total value"
+            tooltip="Polybot bankroll including open positions"
             value={polyData ? formatUSD(polyData.stats.total_value) : "—"}
             sub={polyData ? `bankroll ${formatUSD(polyData.bankroll_start)}` : "awaiting data"}
             tone={polyData ? "default" : "muted"}
           />
           <MetricTile
             label="Polybot — win rate"
+            tooltip="Percentage of closed positions that were profitable"
             value={polyData ? `${polyData.stats.win_rate}%` : "—"}
             sub={polyData ? `${polyData.stats.closed_trades} closed` : "awaiting data"}
             tone={polyData ? "primary" : "muted"}
@@ -259,10 +264,18 @@ export function MerkavianTradingPanel() {
             Disabled in V1 — view-only.
           </TextBody>
           <HStack gap={2} flexWrap="wrap">
-            <Button variant="secondary" disabled>Start Crypto Bot</Button>
-            <Button variant="secondary" disabled>Stop Crypto Bot</Button>
-            <Button variant="secondary" disabled>Start Polybot</Button>
-            <Button variant="secondary" disabled>Stop Polybot</Button>
+            <Tooltip content="Disabled in V1. Will resume crypto bot trading via POST /api/cryptobot/start (requires token auth).">
+              <Button variant="secondary" disabled>Start Crypto Bot</Button>
+            </Tooltip>
+            <Tooltip content="Disabled in V1. Will halt trading and close open positions (requires token auth).">
+              <Button variant="secondary" disabled>Stop Crypto Bot</Button>
+            </Tooltip>
+            <Tooltip content="Disabled in V1. Will resume Polymarket position-taking via POLYBOT_API_TOKEN kill-switch.">
+              <Button variant="secondary" disabled>Start Polybot</Button>
+            </Tooltip>
+            <Tooltip content="Disabled in V1. Will halt the polybot kill-switch — see POLYBOT_API_TOKEN env var.">
+              <Button variant="secondary" disabled>Stop Polybot</Button>
+            </Tooltip>
           </HStack>
         </ContentCard>
 
@@ -314,11 +327,13 @@ function MetricTile({
   value,
   sub,
   tone = "default",
+  tooltip,
 }: {
   label: string;
   value: string;
   sub?: string;
   tone?: "default" | "positive" | "negative" | "muted" | "primary";
+  tooltip?: string;
 }) {
   const VALUE_COLORS: Record<typeof tone, string> = {
     default: "var(--color-fg)",
@@ -327,6 +342,11 @@ function MetricTile({
     muted: "var(--color-fgMuted)",
     primary: "var(--color-fgPrimary)",
   };
+  const labelNode = (
+    <TextCaption as="span" style={{ color: "var(--color-fgMuted)", letterSpacing: "0.08em" }}>
+      {label.toUpperCase()}
+    </TextCaption>
+  );
   return (
     <ContentCard
       padding={3}
@@ -337,9 +357,13 @@ function MetricTile({
         borderRadius: 12,
       }}
     >
-      <TextCaption as="span" style={{ color: "var(--color-fgMuted)", letterSpacing: "0.08em" }}>
-        {label.toUpperCase()}
-      </TextCaption>
+      {tooltip ? (
+        <Tooltip content={tooltip} showIcon>
+          {labelNode}
+        </Tooltip>
+      ) : (
+        labelNode
+      )}
       <TextTitle1
         as="span"
         style={{

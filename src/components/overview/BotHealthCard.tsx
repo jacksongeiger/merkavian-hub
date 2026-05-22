@@ -11,6 +11,7 @@ import {
   TextTitle3,
 } from "@coinbase/cds-web/typography";
 import { StatusDot } from "@/components/ui/StatusDot";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { useHubSettings } from "@/lib/use-hub-settings";
 
 type Service = "cryptobot" | "polybot";
@@ -172,7 +173,7 @@ export function BotHealthCard({ service, index = 0 }: Props) {
       initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.22, ease: "easeOut", delay: index * 0.05 }}
-      style={{ width: "100%" }}
+      style={{ width: "100%", height: "100%", display: "flex" }}
     >
       <ContentCard
         padding={4}
@@ -181,6 +182,8 @@ export function BotHealthCard({ service, index = 0 }: Props) {
         style={{
           background: "var(--color-bg)",
           border: "1px solid var(--color-bgLine)",
+          width: "100%",
+          height: "100%",
           borderRadius: 16,
         }}
       >
@@ -193,16 +196,18 @@ export function BotHealthCard({ service, index = 0 }: Props) {
             />
             <TextTitle3 as="h3">{TITLES[service]}</TextTitle3>
           </HStack>
-          <TextCaption
-            as="span"
-            style={{
-              color: isOnline ? "var(--color-fgPrimary)" : "var(--color-fgMuted)",
-              letterSpacing: "0.08em",
-              fontWeight: 600,
-            }}
-          >
-            {isOnline ? "ONLINE" : "OFFLINE"}
-          </TextCaption>
+          <Tooltip content="Service is reachable and returning data from ARM server">
+            <TextCaption
+              as="span"
+              style={{
+                color: isOnline ? "var(--color-fgPrimary)" : "var(--color-fgMuted)",
+                letterSpacing: "0.08em",
+                fontWeight: 600,
+              }}
+            >
+              {isOnline ? "ONLINE" : "OFFLINE"}
+            </TextCaption>
+          </Tooltip>
         </HStack>
 
         {/* Middle: KPI */}
@@ -259,27 +264,31 @@ function Kpi({ service, state }: { service: Service; state: ServiceState }) {
     const valueColor = positive ? "var(--color-fgPositive)" : "var(--color-fgNegative)";
     return (
       <VStack gap={1}>
-        <TextTitle1
-          as="span"
-          style={{
-            color: valueColor,
-            fontVariantNumeric: "tabular-nums",
-            fontWeight: 600,
-          }}
-        >
-          {formatSignedUsd(c.totalPnl)}
-        </TextTitle1>
-        <TextBody
-          as="span"
-          style={{
-            color: "var(--color-fgMuted)",
-            textTransform: "none",
-            letterSpacing: 0,
-            fontVariantNumeric: "tabular-nums",
-          }}
-        >
-          {formatSignedPct(c.totalPnlPct)} · {c.totalTrades} lifetime trades
-        </TextBody>
+        <Tooltip content="Total profit and loss across all trades since bot deployment">
+          <TextTitle1
+            as="span"
+            style={{
+              color: valueColor,
+              fontVariantNumeric: "tabular-nums",
+              fontWeight: 600,
+            }}
+          >
+            {formatSignedUsd(c.totalPnl)}
+          </TextTitle1>
+        </Tooltip>
+        <Tooltip content="Total number of completed trades executed by the bot">
+          <TextBody
+            as="span"
+            style={{
+              color: "var(--color-fgMuted)",
+              textTransform: "none",
+              letterSpacing: 0,
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            {formatSignedPct(c.totalPnlPct)} · {c.totalTrades} lifetime trades
+          </TextBody>
+        </Tooltip>
       </VStack>
     );
   }
@@ -315,16 +324,18 @@ function Kpi({ service, state }: { service: Service; state: ServiceState }) {
   }
   return (
     <VStack gap={1}>
-      <TextTitle1
-        as="span"
-        style={{
-          color: "var(--color-fg)",
-          fontVariantNumeric: "tabular-nums",
-          fontWeight: 600,
-        }}
-      >
-        Win rate · {p.winRate}%
-      </TextTitle1>
+      <Tooltip content="Percentage of closed positions that were profitable">
+        <TextTitle1
+          as="span"
+          style={{
+            color: "var(--color-fg)",
+            fontVariantNumeric: "tabular-nums",
+            fontWeight: 600,
+          }}
+        >
+          Win rate · {p.winRate}%
+        </TextTitle1>
+      </Tooltip>
       <TextBody
         as="span"
         style={{

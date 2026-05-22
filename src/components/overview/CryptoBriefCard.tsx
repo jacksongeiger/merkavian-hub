@@ -113,7 +113,7 @@ export function CryptoBriefCard({ index = 0 }: { index?: number }) {
     >
       <ContentCard
         padding={4}
-        gap={2}
+        gap={1}
         style={{
           background: "var(--color-bg)",
           border: "1px solid var(--color-bgLine)",
@@ -132,7 +132,10 @@ export function CryptoBriefCard({ index = 0 }: { index?: number }) {
         >
           {eyebrow}
         </TextCaption>
-        <TextTitle2 as="h2" style={{ color: "var(--color-fg)" }}>
+        <TextTitle2
+          as="h2"
+          style={{ color: "var(--color-fg)", marginTop: 4 }}
+        >
           {title}
         </TextTitle2>
         <TextBody
@@ -141,11 +144,17 @@ export function CryptoBriefCard({ index = 0 }: { index?: number }) {
             color: "var(--color-fgMuted)",
             textTransform: "none",
             letterSpacing: 0,
+            marginTop: 8,
           }}
         >
           {body}
         </TextBody>
-        <HStack justifyContent="flex-start" alignItems="center" width="100%">
+        <HStack
+          justifyContent="flex-start"
+          alignItems="center"
+          width="100%"
+          style={{ marginTop: 8 }}
+        >
           <Link
             href="/crypto-tracker"
             style={{

@@ -18,6 +18,7 @@ export default function OverviewPage() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          alignItems: "stretch",
         }}
       >
         <BotHealthCard service="cryptobot" index={0} />
@@ -30,7 +31,8 @@ export default function OverviewPage() {
         gap={3}
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          alignItems: "stretch",
         }}
       >
         <CryptoBotTradesCard index={3} />

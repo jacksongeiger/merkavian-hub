@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { IconName } from "@coinbase/cds-icons";
@@ -42,74 +43,100 @@ const TILES: Tile[] = [
   },
 ];
 
+function QuickLinkTile({
+  tile,
+  delay,
+}: {
+  tile: Tile;
+  delay: number;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.22,
+        ease: "easeOut",
+        delay,
+      }}
+      style={{ width: "100%", height: "100%", display: "flex" }}
+    >
+      <Link
+        href={tile.href}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          textDecoration: "none",
+          color: "inherit",
+          display: "flex",
+          width: "100%",
+          borderRadius: 16,
+        }}
+      >
+        <ContentCard
+          padding={3}
+          gap={2}
+          style={{
+            background: hovered
+              ? "var(--color-bgPrimaryWash)"
+              : "var(--color-bg)",
+            border: `1px solid ${
+              hovered ? "var(--color-fgPrimary)" : "var(--color-bgLine)"
+            }`,
+            borderRadius: 16,
+            cursor: "pointer",
+            width: "100%",
+            minHeight: 152,
+            transition:
+              "border-color 150ms ease-out, background-color 150ms ease-out",
+          }}
+        >
+          <VStack gap={2} style={{ height: "100%" }}>
+            <Icon
+              name={tile.icon}
+              size="m"
+              styles={{ icon: { color: "var(--color-fgPrimary)" } }}
+            />
+            <TextLabel2
+              as="span"
+              style={{ color: "var(--color-fg)", fontWeight: 600 }}
+            >
+              {tile.title}
+            </TextLabel2>
+            <TextBody
+              as="span"
+              style={{
+                color: "var(--color-fgMuted)",
+                textTransform: "none",
+                letterSpacing: 0,
+              }}
+            >
+              {tile.description}
+            </TextBody>
+          </VStack>
+        </ContentCard>
+      </Link>
+    </motion.div>
+  );
+}
+
 export function QuickLinks({ baseIndex = 0 }: { baseIndex?: number }) {
   return (
     <Grid
       gap={3}
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+        alignItems: "stretch",
       }}
     >
       {TILES.map((tile, i) => (
-        <motion.div
+        <QuickLinkTile
           key={tile.href}
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.22,
-            ease: "easeOut",
-            delay: (baseIndex + i) * 0.05,
-          }}
-          style={{ width: "100%" }}
-        >
-          <Link
-            href={tile.href}
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-              display: "block",
-              borderRadius: 16,
-            }}
-          >
-            <ContentCard
-              padding={4}
-              gap={2}
-              style={{
-                background: "var(--color-bg)",
-                border: "1px solid var(--color-bgLine)",
-                borderRadius: 16,
-                cursor: "pointer",
-                transition:
-                  "border-color 0.15s ease-out, transform 0.15s ease-out",
-              }}
-            >
-              <VStack gap={2}>
-                <Icon
-                  name={tile.icon}
-                  size="m"
-                  styles={{ icon: { color: "var(--color-fgPrimary)" } }}
-                />
-                <TextLabel2
-                  as="span"
-                  style={{ color: "var(--color-fg)", fontWeight: 600 }}
-                >
-                  {tile.title}
-                </TextLabel2>
-                <TextBody
-                  as="span"
-                  style={{
-                    color: "var(--color-fgMuted)",
-                    textTransform: "none",
-                    letterSpacing: 0,
-                  }}
-                >
-                  {tile.description}
-                </TextBody>
-              </VStack>
-            </ContentCard>
-          </Link>
-        </motion.div>
+          tile={tile}
+          delay={(baseIndex + i) * 0.05}
+        />
       ))}
     </Grid>
   );

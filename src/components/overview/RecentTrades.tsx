@@ -149,7 +149,7 @@ function TradeCard({
       initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.22, ease: "easeOut", delay: index * 0.05 }}
-      style={{ width: "100%" }}
+      style={{ width: "100%", height: "100%", display: "flex" }}
     >
       <ContentCard
         padding={4}
@@ -158,6 +158,8 @@ function TradeCard({
           background: "var(--color-bg)",
           border: "1px solid var(--color-bgLine)",
           borderRadius: 16,
+          width: "100%",
+          height: "100%",
         }}
       >
         <TextTitle3 as="h3">{title}</TextTitle3>
@@ -237,7 +239,11 @@ export function CryptoBotTradesCard({ index = 0 }: { index?: number }) {
                       : "none",
                 }}
               >
-                <HStack alignItems="center" gap={2} style={{ minWidth: 0 }}>
+                <HStack
+                  alignItems="center"
+                  gap={2}
+                  style={{ minWidth: 0, flex: 1 }}
+                >
                   <TextLabel2
                     as="span"
                     style={{
@@ -248,15 +254,27 @@ export function CryptoBotTradesCard({ index = 0 }: { index?: number }) {
                   >
                     {t.pair}
                   </TextLabel2>
-                  <Tag
-                    intent="informational"
-                    emphasis="low"
-                    colorScheme={actionScheme(t.action)}
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      minWidth: 56,
+                      justifyContent: "flex-start",
+                    }}
                   >
-                    {t.action}
-                  </Tag>
+                    <Tag
+                      intent="informational"
+                      emphasis="low"
+                      colorScheme={actionScheme(t.action)}
+                    >
+                      {t.action}
+                    </Tag>
+                  </span>
                 </HStack>
-                <HStack alignItems="center" gap={2}>
+                <HStack
+                  alignItems="center"
+                  gap={2}
+                  style={{ flexShrink: 0 }}
+                >
                   <TextLabel2
                     as="span"
                     style={{
@@ -268,6 +286,9 @@ export function CryptoBotTradesCard({ index = 0 }: { index?: number }) {
                             : "var(--color-fgMuted)",
                       fontVariantNumeric: "tabular-nums",
                       fontWeight: 600,
+                      textAlign: "right",
+                      minWidth: 72,
+                      display: "inline-block",
                     }}
                   >
                     {pnl.text}
@@ -367,15 +388,27 @@ export function PolybotTradesCard({ index = 0 }: { index?: number }) {
                   >
                     {t.label}
                   </TextLabel2>
-                  <Tag
-                    intent="informational"
-                    emphasis="low"
-                    colorScheme={actionScheme(t.side)}
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      minWidth: 56,
+                      justifyContent: "flex-start",
+                    }}
                   >
-                    {t.side}
-                  </Tag>
+                    <Tag
+                      intent="informational"
+                      emphasis="low"
+                      colorScheme={actionScheme(t.side)}
+                    >
+                      {t.side}
+                    </Tag>
+                  </span>
                 </HStack>
-                <HStack alignItems="center" gap={2}>
+                <HStack
+                  alignItems="center"
+                  gap={2}
+                  style={{ flexShrink: 0 }}
+                >
                   <TextLabel2
                     as="span"
                     style={{
@@ -387,6 +420,9 @@ export function PolybotTradesCard({ index = 0 }: { index?: number }) {
                             : "var(--color-fgMuted)",
                       fontVariantNumeric: "tabular-nums",
                       fontWeight: 600,
+                      textAlign: "right",
+                      minWidth: 72,
+                      display: "inline-block",
                     }}
                   >
                     {pnl.text}
