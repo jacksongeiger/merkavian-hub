@@ -132,7 +132,7 @@ export function ServiceStatusCard({ name, endpoint, pollMs = 30_000, index = 0 }
       <ContentCard
         padding={4}
         gap={3}
-        minHeight={220}
+        minHeight={150}
         style={{
           background: "var(--color-bg)",
           border: "1px solid var(--color-bgLine)",
@@ -145,7 +145,15 @@ export function ServiceStatusCard({ name, endpoint, pollMs = 30_000, index = 0 }
             <TextTitle3 as="h3">{name}</TextTitle3>
           </HStack>
           {(state.kind === "ok" || state.kind === "stale") && (
-            <TextCaption as="span" style={{ color: "var(--color-fgMuted)" }}>
+            <TextCaption
+              as="span"
+              style={{
+                color: "var(--color-fgMuted)",
+                textTransform: "none",
+                letterSpacing: 0,
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
               {formatTimestamp(state.kind === "ok" ? state.fetchedAt : state.lastFetchedAt)}
             </TextCaption>
           )}
