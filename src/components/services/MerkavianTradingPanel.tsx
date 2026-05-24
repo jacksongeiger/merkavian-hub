@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { Button } from "@coinbase/cds-web/buttons";
 import { ContentCard } from "@coinbase/cds-web/cards";
 import { Tag } from "@coinbase/cds-web/tag";
-import { Banner } from "@coinbase/cds-web/banner";
 import { Spinner } from "@coinbase/cds-web/loaders";
 import { Box, Grid, HStack, VStack } from "@coinbase/cds-web/layout";
 import {
@@ -278,13 +277,6 @@ export function MerkavianTradingPanel() {
             </Tooltip>
           </HStack>
         </ContentCard>
-
-        {/* FOOTER BANNER */}
-        <Banner variant="informational" startIcon="laptop" title="More on your Mac">
-          Full dashboard with logs, trainer status, and per-pair history available at
-          <code style={{ margin: "0 4px", background: "var(--color-bg)", padding: "1px 6px", borderRadius: 4, border: "1px solid var(--color-bgLine)" }}>http://localhost:5055</code>
-          on your Mac.
-        </Banner>
       </VStack>
     </motion.div>
   );

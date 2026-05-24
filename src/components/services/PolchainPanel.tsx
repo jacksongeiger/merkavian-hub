@@ -437,7 +437,6 @@ function OverviewTab() {
 
           <HStack gap={1} flexWrap="wrap">
             <Tag colorScheme="yellow">RESEARCH PROTOTYPE</Tag>
-            <Tag colorScheme="gray">DORMANT · APRIL 2026</Tag>
           </HStack>
 
           <HStack gap={2} flexWrap="wrap" alignItems="center">
