@@ -277,6 +277,34 @@ export function MerkavianTradingPanel() {
             </Tooltip>
           </HStack>
         </ContentCard>
+
+        {/* MERKAVIAN HQ — link to the authenticated ARM dashboard */}
+        <SectionHeader title="Merkavian HQ" />
+        <ContentCard
+          padding={4}
+          gap={3}
+          style={{
+            background: "var(--color-bg)",
+            border: "1px solid var(--color-bgLine)",
+            borderRadius: 16,
+          }}
+        >
+          <TextBody as="p" style={{ color: "var(--color-fgMuted)" }}>
+            Full cryptobot dashboard with logs, trainer status, and per-pair history.
+            Hosted on ARM behind Caddy basic auth; sign in with your hub credentials.
+          </TextBody>
+          <HStack gap={2} flexWrap="wrap">
+            <Button
+              as="a"
+              href="https://hq.192-18-128-170.nip.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="primary"
+            >
+              Launch Merkavian HQ
+            </Button>
+          </HStack>
+        </ContentCard>
       </VStack>
     </motion.div>
   );
